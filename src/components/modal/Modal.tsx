@@ -95,6 +95,7 @@ const Modal: FunctionComponent<thisProps> = ({
     return (
         <div className={styles.modalBody}>
             <div className={styles.formContainer}>
+                <button onClick={() => handleModalClose()}>X</button>
                 <form onSubmit={handleSubmit} className={styles.form}>
                     {kanbanCtx?.panels && (
                         <select
