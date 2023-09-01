@@ -1,0 +1,17 @@
+.modalBody {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(10px);
+}
+
+.formContainer {
+    display: flex;
+    justify-content: center;
+    height: 70%;
+    width: 70%;
+    background-color: black;
+}

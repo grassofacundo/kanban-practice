@@ -1,0 +1,85 @@
+@use "./placeholders";
+@use "./colors";
+@use "./fonts";
+@import "./transition";
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-width: 100vw;
+    min-height: 100vh;
+}
+
+html,
+body,
+#root {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    @extend %custom-scroll-bar;
+}
+
+#root {
+    //Set dark variables
+    --bgColor-dark: #{colors.$bgColor-dark};
+    --mainColor-dark: #{colors.$mainColor-dark};
+    --textColor-dark: #{colors.$textColor-dark};
+    --contrastColor-dark: #{colors.$contrastColor-dark};
+
+    //Set light variables
+    --bgColor-light: #{colors.$bgColor-light};
+    --mainColor-light: #{colors.$mainColor-light};
+    --textColor-light: #{colors.$textColor-light};
+    --contrastColor-light: #{colors.$contrastColor-light};
+    @media (prefers-color-scheme: dark) {
+        --bgColor: var(--bgColor-dark);
+        --mainColor: var(--mainColor-dark);
+        --textColor: var(--textColor-dark);
+        --contrastColor: var(--contrastColor-dark);
+    }
+
+    @media (prefers-color-scheme: light) {
+        --bgColor: var(--bgColor-light);
+        --mainColor: var(--mainColor-light);
+        --textColor: var(--textColor-light);
+        --contrastColor: var(--contrastColor-light);
+    }
+
+    --footerHeight: 50px;
+
+    display: flex;
+    justify-content: center;
+    background-color: var(--bgColor);
+}
+
+p,
+h1,
+h2,
+label {
+    color: var(--textColor);
+}
+
+p {
+    font-family: auto;
+    margin: 0;
+}
+
+button {
+    @extend %normal-button;
+}
+
+input[type="text"],
+input[type="mail"],
+input[type="password"] {
+    @extend %normal-input;
+}
+
+.checkbox-label {
+    @extend %normal-checkbox;
+}

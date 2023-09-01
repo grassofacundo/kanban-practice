@@ -1,0 +1,22 @@
+.inOut {
+    transition: transform, opacity ease-in-out;
+    opacity: 0;
+    transform: translateY(25px);
+}
+
+.inOut-entering {
+    opacity: 1;
+    transform: translateY(0);
+}
+.inOut-entered {
+    opacity: 1;
+    transform: translateY(0);
+}
+.inOut-exiting {
+    opacity: 0;
+    transform: translateY(25px);
+}
+.inOut-exited {
+    opacity: 0;
+    transform: translateY(25px);
+}

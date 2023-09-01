@@ -1,0 +1,96 @@
+@mixin buttonMixin(
+    $horizontalPadding: 5px,
+    $verticalPadding: 10px,
+    $bgColor: var(--bgColor),
+    $borderColor: var(--contrastColor),
+    $borderRadius: 5px,
+    $width: fit-content,
+    $textColor: var(--textColor)
+) {
+    padding: $verticalPadding $verticalPadding;
+    margin: 0.5em;
+    background-color: $bgColor;
+    box-shadow: 0px 0px 0px 1px $borderColor;
+    border: {
+        radius: $borderRadius;
+        width: 0;
+    }
+    width: $width;
+    color: $textColor;
+    transition: box-shadow 0.2s linear, opacity 0.2s linear;
+}
+
+@mixin inputMixin(
+    $bgColor: transparent,
+    $borderStyle: solid,
+    $borderColor: var(--contrastColor),
+    $borderTopWidth: 0,
+    $borderBottomWidth: 2px,
+    $borderRightWidth: 0,
+    $borderLeftWidth: 0,
+    $textColor: var(--textColor),
+    $padding: 10px
+) {
+    background-color: $bgColor;
+    border: {
+        style: $borderStyle;
+        color: $borderColor;
+        top-width: $borderTopWidth;
+        bottom-width: $borderBottomWidth;
+        right-width: $borderRightWidth;
+        left-width: $borderLeftWidth;
+    }
+    color: $textColor;
+    padding: $padding;
+}
+
+@mixin checkboxMixin(
+    $fontSize: 14px,
+    $contrastColor: var(--contrastColor),
+    $bgColor: var(--bgColor)
+) {
+    display: grid;
+    grid-template-columns: 1em auto;
+    gap: 0.5em;
+    font-size: $fontSize;
+    line-height: 1.1;
+    color: $contrastColor;
+
+    input {
+        -webkit-appearance: none;
+        appearance: none;
+        background-color: $contrastColor;
+        margin: 0;
+        font: inherit;
+        color: $contrastColor;
+        width: 1.15em;
+        height: 1.15em;
+        border: 0.15em solid $contrastColor;
+        border-radius: 0.15em;
+        transform: translateY(-0.075em);
+        display: grid;
+        place-content: center;
+
+        &::before {
+            content: "";
+            width: 0.65em;
+            height: 0.65em;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em $bgColor;
+            transform-origin: bottom left;
+            clip-path: polygon(
+                14% 44%,
+                0 65%,
+                50% 100%,
+                100% 16%,
+                80% 0%,
+                43% 62%
+            );
+        }
+
+        &:checked::before {
+            transform: scale(1);
+        }
+    }
+}

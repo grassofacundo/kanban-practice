@@ -1,0 +1,51 @@
+@use "./mixins";
+
+%normal-button {
+    @include mixins.buttonMixin;
+
+    &:enabled:hover {
+        cursor: pointer;
+        box-shadow: 0px 0px 0px 3px;
+    }
+
+    &:disabled {
+        opacity: 70%;
+    }
+}
+
+%text-button {
+    @include mixins.buttonMixin($bgColor: transparent);
+    box-shadow: unset;
+
+    &:hover {
+        box-shadow: unset;
+        text-decoration: underline;
+    }
+}
+
+%normal-input {
+    @include mixins.inputMixin;
+}
+
+%normal-checkbox {
+    @include mixins.checkboxMixin;
+}
+
+%custom-scroll-bar {
+    @media (hover: hover) {
+        scrollbar-gutter: stable both-edges;
+
+        ::-webkit-scrollbar {
+            width: 2px;
+        }
+
+        ::-webkit-scrollbar-track {
+            box-shadow: inset 0 0 6px var(--mainColor);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--contrastColor);
+            outline: 1px solid var(--contrastColor);
+        }
+    }
+}
