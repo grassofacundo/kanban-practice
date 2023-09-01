@@ -1,13 +1,22 @@
 .taskBody {
-    width: 100%;
+    width: 120px;
     height: 50px;
     margin: 0;
+    justify-self: center;
 
-    h3,
-    p {
+    &.ghostTask {
+        visibility: hidden;
+        width: 0;
+        height: 0;
         margin: 0;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        max-width: calc(100% - 20px);
+        padding: 0;
     }
+}
+
+h3,
+p {
+    margin: 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 20px);
 }
