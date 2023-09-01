@@ -4,6 +4,7 @@ import TaskContext from "../contexts/KanbanContext";
 import Modal from "../modal/Modal";
 import styles from "./Dashboard.module.scss";
 import { taskData } from "../../types/kanbanElements";
+import dragAndDropService from "../../services/dragAndDropService";
 
 type thisProps = {};
 
@@ -46,7 +47,10 @@ const Dashboard: FunctionComponent<thisProps> = () => {
         kanbanCtx?.panels?.length && kanbanCtx?.panels?.length > 0;
 
     return (
-        <div className={styles.dashboardBody}>
+        <div
+            className={styles.dashboardBody}
+            onPointerMove={(e) => dragAndDropService.handlePointerMove(e)}
+        >
             {hasPanels &&
                 kanbanCtx.panels.map((panel, i) => (
                     <Panel

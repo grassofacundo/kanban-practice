@@ -9,16 +9,18 @@ type thisProps = {
 };
 
 const Task: FunctionComponent<thisProps> = ({ task, sendModalInfo }) => {
+    function handleMove() {
+        if (dragAndDropService.isMoving) return;
+        sendModalInfo(task.id);
+    }
+
     return (
         <button
             id={task.id}
             className={styles.taskBody}
-            onPointerDown={() => dragAndDropService.handlePointerDown(task.id)}
-            onPointerMove={() => dragAndDropService.handlePointerMove(task.id)}
+            onPointerDown={() => dragAndDropService.handlePointerDown(task)}
             onPointerUp={() =>
-                dragAndDropService.handlePointerUp(task.id, () =>
-                    sendModalInfo(task.id)
-                )
+                dragAndDropService.handlePointerUp(handleMove, task)
             }
         >
             <h3>{task.title}</h3>

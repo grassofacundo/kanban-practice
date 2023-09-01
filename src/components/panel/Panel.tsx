@@ -3,7 +3,8 @@ import Task from "../task/Task";
 import styles from "./Panel.module.scss";
 import TaskContext from "../contexts/KanbanContext";
 import kanbanService from "../../services/kanbanService";
-import { panel } from "../../types/kanbanElements";
+import { panel, task } from "../../types/kanbanElements";
+import dragAndDropService from "../../services/dragAndDropService";
 
 type thisProps = {
     panelData: panel;
@@ -30,8 +31,22 @@ const Panel: FunctionComponent<thisProps> = ({
         onHandleModalOpen({ taskId, panelId: panelData.id });
     }
 
+    async function handleTaskMove(task: task | null) {
+        if (task && task.statusPanel !== panelData.id) {
+            task.statusPanel = panelData.id;
+            await kanbanCtx?.updateTask(task);
+        }
+    }
+
     return (
-        <div className={styles.panelBody}>
+        <div
+            className={styles.panelBody}
+            onPointerUp={() =>
+                dragAndDropService.handlePointerUp(() =>
+                    handleTaskMove(dragAndDropService.taskData)
+                )
+            }
+        >
             <h1>{panelData.name}</h1>
             <div className={styles.tasksContainer}>
                 {tasks &&
