@@ -1,7 +1,7 @@
 import { FunctionComponent, useContext } from "react";
 import Task from "../task/Task";
 import styles from "./Panel.module.scss";
-import TaskContext from "../contexts/KanbanContext";
+import KanbanContext from "../contexts/KanbanContext";
 import kanbanService from "../../services/kanbanService";
 import { panel, task } from "../../types/kanbanElements";
 import dragAndDropService from "../../services/dragAndDropService";
@@ -21,7 +21,7 @@ const Panel: FunctionComponent<thisProps> = ({
     panelData,
     onHandleModalOpen,
 }) => {
-    const kanbanCtx = useContext(TaskContext);
+    const kanbanCtx = useContext(KanbanContext);
     const tasks = kanbanService.getTasksByStatus(
         panelData.id,
         kanbanCtx?.tasks!
@@ -31,22 +31,8 @@ const Panel: FunctionComponent<thisProps> = ({
         onHandleModalOpen({ taskId, panelId: panelData.id });
     }
 
-    async function handleTaskMove(task: task | null) {
-        if (task && task.statusPanel !== panelData.id) {
-            task.statusPanel = panelData.id;
-            await kanbanCtx?.updateTask(task);
-        }
-    }
-
     return (
-        <div
-            className={styles.panelBody}
-            onPointerUp={() =>
-                dragAndDropService.handlePointerUp(() =>
-                    handleTaskMove(dragAndDropService.taskData)
-                )
-            }
-        >
+        <div id={panelData.id} className={styles.panelBody}>
             <h1>{panelData.name}</h1>
             <div className={styles.tasksContainer}>
                 {tasks &&

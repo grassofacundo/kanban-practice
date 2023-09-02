@@ -1,4 +1,11 @@
-import { FunctionComponent, useContext, useState, FormEvent } from "react";
+import {
+    FunctionComponent,
+    useContext,
+    useState,
+    FormEvent,
+    TouchEvent,
+    PointerEvent,
+} from "react";
 import Panel from "../panel/Panel";
 import TaskContext from "../contexts/KanbanContext";
 import Modal from "../modal/Modal";
@@ -49,7 +56,12 @@ const Dashboard: FunctionComponent<thisProps> = () => {
     return (
         <div
             className={styles.dashboardBody}
-            onPointerMove={(e) => dragAndDropService.handlePointerMove(e)}
+            {...(dragAndDropService.loadEvent(
+                "move",
+                (
+                    e: TouchEvent<HTMLDivElement> | PointerEvent<HTMLDivElement>
+                ) => dragAndDropService.handleMove(e)
+            ) as any)}
         >
             {hasPanels &&
                 kanbanCtx.panels.map((panel, i) => (
@@ -59,18 +71,20 @@ const Dashboard: FunctionComponent<thisProps> = () => {
                         onHandleModalOpen={handleModalOpen}
                     />
                 ))}
-            <form onSubmit={handleSubmit} className={styles.form}>
-                <input
-                    type="text"
-                    placeholder="New panel name"
-                    onChange={({ target }) => setNewPanelName(target.value)}
-                />
-                <input
-                    disabled={loading || !newPanelName}
-                    type="submit"
-                    value="Submit"
-                />
-            </form>
+            {!config?.hasFixedPanels && (
+                <form onSubmit={handleSubmit} className={styles.form}>
+                    <input
+                        type="text"
+                        placeholder="New panel name"
+                        onChange={({ target }) => setNewPanelName(target.value)}
+                    />
+                    <input
+                        disabled={loading || !newPanelName}
+                        type="submit"
+                        value="Submit"
+                    />
+                </form>
+            )}
             {modalOpen && modalData && (
                 <Modal
                     taskData={modalData}
