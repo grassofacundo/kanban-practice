@@ -50,7 +50,9 @@ const Modal: FunctionComponent<thisProps> = ({
 
     function handleChange({
         target,
-    }: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
+    }: ChangeEvent<
+        HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >) {
         const key = target.name;
         const value = target.value;
         setTaskToUpdate({ ...taskToUpdate, [key]: value });
@@ -95,40 +97,68 @@ const Modal: FunctionComponent<thisProps> = ({
     return (
         <div className={styles.modalBody}>
             <div className={styles.formContainer}>
-                <button onClick={() => handleModalClose()}>X</button>
+                <button
+                    className={styles.closeButton}
+                    onClick={() => handleModalClose()}
+                >
+                    X
+                </button>
                 <form onSubmit={handleSubmit} className={styles.form}>
-                    {kanbanCtx?.panels && (
-                        <select
-                            name="statusPanel"
-                            id={kanbanCtx?.panels[0].id}
-                            onChange={(target) => handleChange(target)}
-                        >
-                            {kanbanCtx?.panels.map((panel) => (
-                                <option key={panel.id} value={panel.id}>
-                                    {panel.name}
-                                </option>
-                            ))}
-                        </select>
-                    )}
-                    <input
-                        type="text"
-                        name="title"
-                        placeholder="Set title"
-                        value={taskToUpdate.title}
-                        onChange={(target) => handleChange(target)}
-                    />
-                    <input
-                        type="text"
-                        name="description"
-                        placeholder="Set description"
-                        value={taskToUpdate.description}
-                        onChange={(target) => handleChange(target)}
-                    />
-                    <input
-                        disabled={!submitEnabled}
-                        type="submit"
-                        value={loading ? "Loading" : "Submit"}
-                    />
+                    <fieldset>
+                        <div className={styles.inputContainer}>
+                            <label htmlFor="title">Task title</label>
+                            <input
+                                type="text"
+                                name="title"
+                                id="title"
+                                placeholder="Set title"
+                                value={taskToUpdate.title}
+                                onChange={(target) => handleChange(target)}
+                            />
+                        </div>
+                        <div className={styles.inputContainer}>
+                            <label htmlFor="description">Description</label>
+                            <textarea
+                                id="description"
+                                name="description"
+                                placeholder="Set description"
+                                value={taskToUpdate.description}
+                                onChange={(target) => handleChange(target)}
+                            />
+                        </div>
+                        <div className={styles.inputContainer}>
+                            <label>Status</label>
+                            {kanbanCtx?.panels &&
+                                kanbanCtx?.panels.map((panel) => (
+                                    <div
+                                        key={panel.id}
+                                        className={styles.radioWrapper}
+                                    >
+                                        <input
+                                            type="radio"
+                                            id={`radio-id-${panel.id}`}
+                                            name="statusPanel"
+                                            value={panel.id}
+                                            defaultChecked={
+                                                panel.id ===
+                                                taskData.statusPanel
+                                            }
+                                            onChange={(target) =>
+                                                handleChange(target)
+                                            }
+                                        />
+                                        <label htmlFor={`radio-id-${panel.id}`}>
+                                            {panel.name}
+                                        </label>
+                                    </div>
+                                ))}
+                        </div>
+                        <input
+                            disabled={!submitEnabled}
+                            type="submit"
+                            value={loading ? "Loading" : "Submit"}
+                        />
+                    </fieldset>
                 </form>
             </div>
         </div>

@@ -1,5 +1,7 @@
 .modalBody {
     position: absolute;
+    top: 0;
+    left: 0;
     height: 100%;
     width: 100%;
     display: flex;
@@ -9,9 +11,62 @@
 }
 
 .formContainer {
+    position: relative;
     display: flex;
     justify-content: center;
-    height: 70%;
-    width: 70%;
+    max-height: 90%;
+    height: fit-content;
+    max-width: 400px;
+    width: fit-content;
     background-color: black;
+
+    .closeButton {
+        position: absolute;
+        right: 0;
+    }
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+    max-width: 400px;
+    font-family: "Wonder-Unit-Sans-Regular";
+
+    .inputContainer {
+        padding: 15px;
+
+        label {
+            display: block;
+            padding: {
+                top: 10px;
+                bottom: 10px;
+            }
+        }
+
+        input[id="title"] {
+            width: 100%;
+            font-size: xx-large;
+            text-align: center;
+        }
+
+        textarea {
+            width: 100% !important;
+            min-height: 60px;
+            max-height: 150px;
+            background-color: transparent;
+        }
+
+        .radioWrapper {
+            label {
+                display: inline-block;
+                padding: {
+                    top: 2px;
+                    bottom: 2px;
+                }
+            }
+        }
+    }
 }

@@ -1,21 +1,69 @@
+@use "../../style/placeholders";
+
 .panelBody {
+    --panelPadding: 15px;
+    --taskHeight: 50px;
+
+    display: flex;
+    flex-direction: column;
     width: 30%;
     text-align: center;
-    border: 1px white solid;
-    border-radius: 10px;
+    max-width: 350px;
+    overflow: hidden;
+
+    h3,
+    .tasksContainer {
+        @extend %standard-radius;
+        background-color: var(--primaryColor);
+        font-family: "Wonder-Unit-Sans-Regular";
+        padding: {
+            top: var(--panelPadding, 15px);
+            bottom: var(--panelPadding, 15px);
+        }
+    }
+
+    .tasksContainer {
+        display: flex;
+        flex-flow: wrap;
+        width: 100%;
+        gap: 15px;
+        padding: {
+            left: var(--panelPadding, 15px);
+            right: var(--panelPadding, 15px);
+        }
+        overflow: auto;
+    }
+
+    @media (max-width: 700px) {
+        --panelPadding: 5px;
+
+        --panelHeight: calc(
+            var(--taskHeight) * 2 + var(--panelPadding) * 2 + 20px
+        );
+
+        width: 100%;
+        max-width: none;
+        height: fit-content;
+
+        h3 {
+            padding: 0;
+            width: fit-content;
+            margin-bottom: 10px;
+            background-color: transparent;
+        }
+
+        .tasksContainer {
+            flex-direction: column;
+            height: var(--panelHeight, 800px);
+            justify-content: center;
+            align-content: flex-start;
+        }
+    }
 }
 
-.tasksContainer {
-    display: grid;
-    grid-template-columns: repeat(2, 49%);
-    grid-template-rows: repeat(1, 1fr);
-    column-gap: 2%;
-    row-gap: 10px;
-
-    .newTaskButton {
-        width: 120px;
-        height: 50px;
-        margin: 0;
-        justify-self: center;
-    }
+.newTaskButton {
+    width: 100%;
+    height: 50px;
+    margin: 0;
+    justify-self: center;
 }

@@ -3,8 +3,7 @@ import Task from "../task/Task";
 import styles from "./Panel.module.scss";
 import KanbanContext from "../contexts/KanbanContext";
 import kanbanService from "../../services/kanbanService";
-import { panel, task } from "../../types/kanbanElements";
-import dragAndDropService from "../../services/dragAndDropService";
+import { panel } from "../../types/kanbanElements";
 
 type thisProps = {
     panelData: panel;
@@ -26,29 +25,26 @@ const Panel: FunctionComponent<thisProps> = ({
         panelData.id,
         kanbanCtx?.tasks!
     );
-
-    function handleCallback(taskId?: string) {
-        onHandleModalOpen({ taskId, panelId: panelData.id });
-    }
+    //Add create new task at last
+    tasks.push({
+        id: "newTask",
+        title: "Create new task",
+        description: "",
+        statusPanel: panelData.id,
+    });
 
     return (
         <div id={panelData.id} className={styles.panelBody}>
-            <h1>{panelData.name}</h1>
+            <h3>{panelData.name}</h3>
             <div className={styles.tasksContainer}>
                 {tasks &&
                     tasks.map((task) => (
                         <Task
                             key={task.id}
                             task={task}
-                            sendModalInfo={handleCallback}
+                            sendModalInfo={onHandleModalOpen}
                         ></Task>
                     ))}
-                <button
-                    className={styles.newTaskButton}
-                    onClick={() => handleCallback()}
-                >
-                    New task
-                </button>
             </div>
         </div>
     );
