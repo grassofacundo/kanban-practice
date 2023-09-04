@@ -1,12 +1,9 @@
 import { panel, task } from "../types/kanbanElements";
 
 class DbService {
-    // @ts-ignore
-    hasDatabase: boolean = config.isDbEnabled; //Config exists as a global var (public/config.js)
-    // @ts-ignore
-    hasPanelList: string[] = config.PanelList; //Config exists as a global var (public/config.js)
-    // @ts-ignore
-    hasFixedPanels: boolean = config.hasFixedPanels; //Config exists as a global var (public/config.js)
+    hasDatabase: boolean = false;
+    panelList: string[] = ["To do", "In progress", "Done"];
+    hasFixedPanels: boolean = true;
     taskLocalStorageKey = "tasks";
     panelLocalStorageKey = "panels";
 
@@ -26,8 +23,8 @@ class DbService {
 
     async getAllPanels(): Promise<panel[]> {
         let panel: panel[] = [];
-        if (this.hasFixedPanels && this.hasPanelList.length > 0) {
-            this.hasPanelList.forEach((p, index: number) =>
+        if (this.hasFixedPanels && this.panelList.length > 0) {
+            this.panelList.forEach((p, index: number) =>
                 panel.push({ id: index.toString(), name: p })
             );
             return panel;

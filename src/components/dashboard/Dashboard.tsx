@@ -12,6 +12,7 @@ import Modal from "../modal/Modal";
 import styles from "./Dashboard.module.scss";
 import { taskData } from "../../types/kanbanElements";
 import dragAndDropService from "../../services/dragAndDropService";
+import dbService from "../../services/dbService";
 
 type thisProps = {};
 
@@ -55,7 +56,9 @@ const Dashboard: FunctionComponent<thisProps> = () => {
 
     return (
         <div
-            className={styles.dashboardBody}
+            className={`${
+                !dbService.hasFixedPanels ? styles.hasPanelCreate : ""
+            } ${styles.dashboardBody}`}
             {...(dragAndDropService.loadEvent(
                 "move",
                 (
@@ -71,7 +74,7 @@ const Dashboard: FunctionComponent<thisProps> = () => {
                         onHandleModalOpen={handleModalOpen}
                     />
                 ))}
-            {!config?.hasFixedPanels && (
+            {!dbService.hasFixedPanels && (
                 <form onSubmit={handleSubmit} className={styles.form}>
                     <input
                         type="text"
