@@ -1,8 +1,23 @@
 @font-face {
-    font-family: "monomaniac_oneregular";
-    src: url("../assets/fonts/monomaniacone-regular-webfont.woff2")
-            format("woff2"),
-        url("../assets/fonts/monomaniacone-regular-webfont.woff") format("woff");
+    font-family: "Wonder-Unit-Sans-Regular";
+    src: url("../assets/fonts/WonderUnitSans-Regular.woff2") format("woff2"),
+        url("../assets/fonts/WonderUnitSans-Regular.woff") format("woff");
     font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Wonder-Unit-Sans-Bold";
+    src: url("../assets/fonts/WonderUnitSans-Bold.woff2") format("woff2"),
+        url("../assets/fonts/WonderUnitSans-Bold.woff") format("woff");
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Wonder-Unit-Sans-Light";
+    src: url("../assets/fonts/WonderUnitSans-Light.woff2") format("woff2"),
+        url("../assets/fonts/WonderUnitSans-Light.woff") format("woff");
+    font-weight: 400;
     font-style: normal;
 }
