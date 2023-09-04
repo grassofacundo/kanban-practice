@@ -28,27 +28,27 @@ body {
 #root {
     //Set dark variables
     --bgColor-dark: #{colors.$bgColor-dark};
-    --mainColor-dark: #{colors.$mainColor-dark};
+    --primaryColor-dark: #{colors.$primaryColor-dark};
     --textColor-dark: #{colors.$textColor-dark};
-    --contrastColor-dark: #{colors.$contrastColor-dark};
+    --accentColor-dark: #{colors.$accentColor-dark};
 
     //Set light variables
     --bgColor-light: #{colors.$bgColor-light};
-    --mainColor-light: #{colors.$mainColor-light};
+    --primaryColor-light: #{colors.$primaryColor-light};
     --textColor-light: #{colors.$textColor-light};
-    --contrastColor-light: #{colors.$contrastColor-light};
+    --accentColor-light: #{colors.$accentColor-light};
     @media (prefers-color-scheme: dark) {
         --bgColor: var(--bgColor-dark);
-        --mainColor: var(--mainColor-dark);
+        --primaryColor: var(--primaryColor-dark);
         --textColor: var(--textColor-dark);
-        --contrastColor: var(--contrastColor-dark);
+        --accentColor: var(--accentColor-dark);
     }
 
     @media (prefers-color-scheme: light) {
         --bgColor: var(--bgColor-light);
-        --mainColor: var(--mainColor-light);
+        --primaryColor: var(--primaryColor-light);
         --textColor: var(--textColor-light);
-        --contrastColor: var(--contrastColor-light);
+        --accentColor: var(--accentColor-light);
     }
 
     --footerHeight: 50px;
@@ -61,13 +61,19 @@ body {
 p,
 h1,
 h2,
-label {
+h3,
+label,
+textarea {
     color: var(--textColor);
 }
 
 p {
-    font-family: auto;
+    font-family: "Wonder-Unit-Sans-Regular";
     margin: 0;
+
+    @media (max-width: 700px) {
+        font-size: 16px;
+    }
 }
 
 button {

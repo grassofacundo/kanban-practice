@@ -2,7 +2,7 @@
     $horizontalPadding: 5px,
     $verticalPadding: 10px,
     $bgColor: var(--bgColor),
-    $borderColor: var(--contrastColor),
+    $borderColor: var(--textColor),
     $borderRadius: 5px,
     $width: fit-content,
     $textColor: var(--textColor)
@@ -10,7 +10,7 @@
     padding: $verticalPadding $verticalPadding;
     margin: 0.5em;
     background-color: $bgColor;
-    box-shadow: 0px 0px 0px 1px $borderColor;
+    box-shadow: $borderColor;
     border: {
         radius: $borderRadius;
         width: 0;
@@ -23,7 +23,7 @@
 @mixin inputMixin(
     $bgColor: transparent,
     $borderStyle: solid,
-    $borderColor: var(--contrastColor),
+    $borderColor: var(--textColor),
     $borderTopWidth: 0,
     $borderBottomWidth: 2px,
     $borderRightWidth: 0,
@@ -46,7 +46,7 @@
 
 @mixin checkboxMixin(
     $fontSize: 14px,
-    $contrastColor: var(--contrastColor),
+    $accentColor: var(--accentColor),
     $bgColor: var(--bgColor)
 ) {
     display: grid;
@@ -54,18 +54,18 @@
     gap: 0.5em;
     font-size: $fontSize;
     line-height: 1.1;
-    color: $contrastColor;
+    color: $accentColor;
 
     input {
         -webkit-appearance: none;
         appearance: none;
-        background-color: $contrastColor;
+        background-color: $accentColor;
         margin: 0;
         font: inherit;
-        color: $contrastColor;
+        color: $accentColor;
         width: 1.15em;
         height: 1.15em;
-        border: 0.15em solid $contrastColor;
+        border: 0.15em solid $accentColor;
         border-radius: 0.15em;
         transform: translateY(-0.075em);
         display: grid;
