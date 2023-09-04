@@ -7,9 +7,13 @@ class DragAndDropService {
     isPointerDown = false;
     isMoving = false;
     hasTouchScreen = false;
+    timeOutId = 0;
+    threshold = 250;
+    canMove = false;
 
     init() {
         this.hasTouchScreen = browserService.hasTouchscreen();
+        if (!this.hasTouchScreen) this.threshold = 0;
     }
 
     loadEvent(eventName: string, callback: Function) {
@@ -41,6 +45,10 @@ class DragAndDropService {
     }
 
     handleStart(task: task) {
+        this.timeOutId = setTimeout(() => {
+            this.canMove = true;
+        }, this.threshold);
+
         this.taskData = task;
         this.isPointerDown = true;
         this.isMoving = false;
@@ -49,7 +57,8 @@ class DragAndDropService {
     handleMove(
         event: TouchEvent<HTMLDivElement> | PointerEvent<HTMLDivElement>
     ) {
-        if (!this.isPointerDown || !this.taskData) {
+        event.preventDefault();
+        if (!this.isPointerDown || !this.taskData || !this.canMove) {
             this.reset();
             return;
         }
@@ -96,12 +105,12 @@ class DragAndDropService {
 
     checkOverlap(
         elem: HTMLElement,
-        targetElems: HTMLElement[]
+        targetElements: HTMLElement[]
     ): HTMLElement | null {
         const rect1 = elem.getBoundingClientRect();
 
         let overlappedElement = null;
-        for (const target of targetElems) {
+        for (const target of targetElements) {
             const rect2 = target.getBoundingClientRect();
 
             const horizontalTouch =
@@ -120,6 +129,8 @@ class DragAndDropService {
     }
 
     reset() {
+        clearInterval(this.timeOutId);
+        this.canMove = false;
         if (this.taskData) {
             const taskElem = document.getElementById(this.taskData.id);
             if (taskElem) {
