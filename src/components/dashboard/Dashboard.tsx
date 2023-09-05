@@ -13,6 +13,8 @@ import styles from "./Dashboard.module.scss";
 import { taskData } from "../../types/kanbanElements";
 import dragAndDropService from "../../services/dragAndDropService";
 import dbService from "../../services/dbService";
+import PanelSkeleton from "../panel/PanelSkeleton";
+import ThemeChanger from "../themeChanger/ThemeChanger";
 
 type thisProps = {};
 
@@ -51,8 +53,7 @@ const Dashboard: FunctionComponent<thisProps> = () => {
         setModalOpen(false);
     }
 
-    const hasPanels =
-        kanbanCtx?.panels?.length && kanbanCtx?.panels?.length > 0;
+    const hasPanels = !!kanbanCtx && kanbanCtx?.panels?.length! > 0;
 
     return (
         <div
@@ -74,6 +75,7 @@ const Dashboard: FunctionComponent<thisProps> = () => {
                         onHandleModalOpen={handleModalOpen}
                     />
                 ))}
+            {!hasPanels && [1, 2, 3].map((x) => <PanelSkeleton key={x} />)}
             {!dbService.hasFixedPanels && (
                 <form onSubmit={handleSubmit} className={styles.form}>
                     <input
@@ -94,6 +96,7 @@ const Dashboard: FunctionComponent<thisProps> = () => {
                     handleModalClose={handleModalClose}
                 />
             )}
+            {<ThemeChanger />}
         </div>
     );
 };

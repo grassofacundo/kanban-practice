@@ -14,11 +14,42 @@
     h3,
     .tasksContainer {
         @extend %standard-radius;
+
         background-color: var(--primaryColor);
         font-family: "Wonder-Unit-Sans-Regular";
         padding: {
             top: var(--panelPadding, 15px);
             bottom: var(--panelPadding, 15px);
+        }
+    }
+
+    span {
+        text-align: left;
+        margin-bottom: 10px;
+        font-family: "Wonder-Unit-Sans-Regular";
+        height: 0;
+        transition: height 400ms ease;
+
+        &.show {
+            animation: 2s infinite showAndHide;
+            height: 20px;
+
+            @keyframes showAndHide {
+                0% {
+                    opacity: 0;
+                }
+                50% {
+                    opacity: 1;
+                }
+                100% {
+                    opacity: 0;
+                }
+            }
+        }
+
+        &.error {
+            color: var(--errorColor);
+            animation: none;
         }
     }
 
@@ -54,16 +85,68 @@
 
         .tasksContainer {
             flex-direction: column;
-            height: var(--panelHeight, 800px);
+            height: var(--panelHeight, 300px);
             justify-content: center;
             align-content: flex-start;
         }
     }
 }
 
-.newTaskButton {
-    width: 100%;
-    height: 50px;
-    margin: 0;
-    justify-self: center;
+.skeleton {
+    width: 30%;
+    max-width: 350px;
+
+    .tasksContainer {
+        height: 50%;
+    }
+
+    h3,
+    .tasksContainer {
+        position: relative;
+        overflow: hidden;
+
+        &::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            transform: translateX(-100%);
+            background-image: linear-gradient(
+                90deg,
+                rgba(#fff, 0) 0,
+                rgba(#fff, 0.2) 20%,
+                rgba(#fff, 0.5) 60%,
+                rgba(#fff, 0)
+            );
+            background-size: 100px;
+            background-repeat: no-repeat;
+
+            animation: shimmer 2s infinite;
+
+            @keyframes shimmer {
+                100% {
+                    transform: translateX(100%);
+                }
+            }
+        }
+    }
+
+    @media (max-width: 700px) {
+        --panelHeight: calc(
+            var(--taskHeight) * 2 + var(--panelPadding) * 2 + 20px
+        );
+
+        width: 100%;
+        max-width: none;
+        height: fit-content;
+
+        .tasksContainer {
+            flex-direction: column;
+            height: var(--panelHeight, 300px);
+            justify-content: center;
+            align-content: flex-start;
+        }
+    }
 }
