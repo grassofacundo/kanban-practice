@@ -18,7 +18,7 @@
     height: fit-content;
     max-width: 400px;
     width: fit-content;
-    background-color: black;
+    background-color: var(--primaryColor);
 
     .closeButton {
         position: absolute;
@@ -67,6 +67,19 @@
                     bottom: 2px;
                 }
             }
+        }
+    }
+
+    .submitWrapper {
+        display: flex;
+        align-items: center;
+
+        .success {
+            color: var(--successColor);
+        }
+
+        .error {
+            color: var(--errorColor);
         }
     }
 }

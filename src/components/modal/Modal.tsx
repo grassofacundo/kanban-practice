@@ -10,7 +10,8 @@ import {
 import TaskContext from "../contexts/KanbanContext";
 import { task, taskData } from "../../types/kanbanElements";
 import styles from "./Modal.module.scss";
-import kanbanService from "../../services/kanbanService";
+import keyService from "../../services/keyService";
+import Spinner from "../utils/spinner/Spinner";
 
 type thisProps = {
     taskData: taskData;
@@ -23,24 +24,29 @@ const Modal: FunctionComponent<thisProps> = ({
 }) => {
     const kanbanCtx = useContext(TaskContext);
     const taskExist = useCallback(tasksExists, []);
-    const [taskToUpdate, setTaskToUpdate] = useState(loadTask(taskData));
+    const [taskToUpdate, setTaskToUpdate] = useState<taskData>(
+        loadTask(taskData)
+    );
     const [submitEnabled, setSubmitEnabled] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState<string>("");
+    const [showMessage, setShowMessage] = useState<boolean>(false);
+    const [hasErrors, setHasErrors] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
 
     function tasksExists(): Boolean {
         return !!(
             taskData.id &&
             kanbanCtx?.tasks &&
-            kanbanService.elementExists(taskData.id, kanbanCtx?.tasks)
+            keyService.elementExists(taskData.id, kanbanCtx?.tasks)
         );
     }
 
     function loadTask(taskData: taskData): taskData {
         if (taskExist()) {
-            return kanbanService.getTaskById(taskData.id!, kanbanCtx?.tasks!)!;
+            return kanbanCtx!.getTaskById(taskData.id!)!;
         } else {
             return {
-                id: kanbanService.createUniqueId(kanbanCtx?.tasks!),
+                id: keyService.createUniqueId(kanbanCtx?.tasks!),
                 title: "",
                 description: "",
                 statusPanel: taskData.statusPanel,
@@ -53,6 +59,8 @@ const Modal: FunctionComponent<thisProps> = ({
     }: ChangeEvent<
         HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >) {
+        setShowMessage(false);
+        setHasErrors(false);
         const key = target.name;
         const value = target.value;
         setTaskToUpdate({ ...taskToUpdate, [key]: value });
@@ -60,16 +68,31 @@ const Modal: FunctionComponent<thisProps> = ({
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        setLoading(true);
+        if (!kanbanCtx) return;
 
+        setLoading(true);
+        setHasErrors(false);
+        setShowMessage(false);
+        let ok = false;
         if (taskExist()) {
-            await kanbanCtx?.updateTask(taskToUpdate as task);
-            handleModalClose();
+            ok = await kanbanCtx?.updateTask(taskToUpdate as task);
         } else {
-            await kanbanCtx?.createTask(taskToUpdate);
-            handleModalClose();
+            ok = await kanbanCtx?.createTask(taskToUpdate);
         }
 
+        if (ok) {
+            setHasErrors(false);
+            setMessage(taskExist() ? "Task updated" : "Task created");
+            setSubmitEnabled(false);
+        } else {
+            setHasErrors(true);
+            setMessage(
+                taskExist()
+                    ? "Task not updated. Try again"
+                    : "Task not created. Try again"
+            );
+        }
+        setShowMessage(true);
         setLoading(false);
     }
 
@@ -78,7 +101,7 @@ const Modal: FunctionComponent<thisProps> = ({
             (taskPropertyValue) => taskPropertyValue !== ""
         );
         const originalTask = taskExist()
-            ? kanbanService.getTaskById(taskData.id!, kanbanCtx?.tasks!)
+            ? kanbanCtx!.getTaskById(taskData.id!)
             : null;
         const hasChanged =
             !taskExist() ||
@@ -99,7 +122,7 @@ const Modal: FunctionComponent<thisProps> = ({
             <div className={styles.formContainer}>
                 <button
                     className={styles.closeButton}
-                    onClick={() => handleModalClose()}
+                    onClick={() => (!loading ? handleModalClose() : {})}
                 >
                     X
                 </button>
@@ -153,11 +176,22 @@ const Modal: FunctionComponent<thisProps> = ({
                                     </div>
                                 ))}
                         </div>
-                        <input
-                            disabled={!submitEnabled}
-                            type="submit"
-                            value={loading ? "Loading" : "Submit"}
-                        />
+                        <div className={styles.submitWrapper}>
+                            <button disabled={!submitEnabled} type="submit">
+                                {loading ? <Spinner /> : "Submit"}
+                            </button>
+                            {showMessage && (
+                                <p
+                                    className={`${
+                                        hasErrors
+                                            ? styles.error
+                                            : styles.success
+                                    }`}
+                                >
+                                    {message}
+                                </p>
+                            )}
+                        </div>
                     </fieldset>
                 </form>
             </div>
