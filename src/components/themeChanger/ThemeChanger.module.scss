@@ -1,0 +1,32 @@
+@use "../../style/colors";
+
+.themeButton {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    border-radius: 100%;
+    width: 30px;
+    height: 30px;
+    background-color: #{colors.$primaryColor-light};
+    transition: transform 250ms ease-in;
+    ease-in &:hover {
+        box-shadow: 0px 0px 0px 1px;
+    }
+
+    &:after {
+        content: "";
+        background-color: #{colors.$primaryColor-dark};
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        border-radius: 100%;
+        width: 30px;
+        height: 30px;
+        box-shadow: unset;
+        clip-path: inset(0px 0px 0px 50%);
+    }
+
+    &.inverted {
+        transform: rotate(180deg);
+    }
+}
