@@ -1,4 +1,10 @@
-import { FunctionComponent, useContext, useRef } from "react";
+import {
+    FunctionComponent,
+    useContext,
+    useRef,
+    Dispatch,
+    SetStateAction,
+} from "react";
 import styles from "./Task.module.scss";
 import { task } from "../../types/kanbanElements";
 import dragAndDropService from "../../services/dragAndDropService";
@@ -13,9 +19,16 @@ type thisProps = {
         taskId?: string;
         panelId: string;
     }): void;
+    onSetMessage: Dispatch<
+        SetStateAction<{ content: string; isError: boolean }>
+    >;
 };
 
-const Task: FunctionComponent<thisProps> = ({ task, sendModalInfo }) => {
+const Task: FunctionComponent<thisProps> = ({
+    task,
+    sendModalInfo,
+    onSetMessage,
+}) => {
     const kanbanCtx = useContext(KanbanContext);
     const taskElem = useRef(null);
 
@@ -30,9 +43,12 @@ const Task: FunctionComponent<thisProps> = ({ task, sendModalInfo }) => {
 
     async function handleEnd() {
         const taskHtml = taskElem.current as unknown as HTMLElement;
+        const toUpdateTask = JSON.parse(JSON.stringify(task));
 
         if (dragAndDropService.isMoving) {
-            const currentPanel = task.statusPanel;
+            dragAndDropService.isBlocked = true;
+            onSetMessage({ content: `Moving ${task.title}`, isError: false });
+            const currentPanel = toUpdateTask.statusPanel;
             if (!taskHtml) return;
             const panelsElem = kanbanCtx?.panels.map((panel) =>
                 document.getElementById(panel.id)
@@ -43,9 +59,19 @@ const Task: FunctionComponent<thisProps> = ({ task, sendModalInfo }) => {
                 panelsElem as HTMLElement[]
             );
             if (overlappedPanel && currentPanel !== overlappedPanel.id) {
-                console.log(`Overlapped on element ${overlappedPanel.id}`);
-                task.statusPanel = overlappedPanel.id;
-                await kanbanCtx?.updateTask(task);
+                toUpdateTask.statusPanel = overlappedPanel.id;
+                const ok = await kanbanCtx?.updateTask(toUpdateTask);
+                if (!ok)
+                    onSetMessage({
+                        content: `Couldn't move task ${task.title}`,
+                        isError: true,
+                    });
+                if (ok)
+                    onSetMessage({
+                        content: "",
+                        isError: false,
+                    });
+                dragAndDropService.isBlocked = false;
             }
         } else {
             sendModalInfo({ taskId: task.id, panelId: task.statusPanel });
