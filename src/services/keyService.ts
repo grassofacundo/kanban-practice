@@ -1,18 +1,6 @@
 import { panel, task } from "../types/kanbanElements";
 
-class KanbanService {
-    getTaskById(taskId: string, allTasks: task[]): task | null {
-        return allTasks.find((task) => task.id === taskId) ?? null;
-    }
-
-    getTasksByStatus(panelId: string, allTasks: task[]): task[] {
-        return allTasks.filter((task) => task.statusPanel === panelId);
-    }
-
-    getPanelById(panelId: string, allPanels: panel[]): panel | null {
-        return allPanels.find((panel) => panel.id === panelId) ?? null;
-    }
-
+class KeyService {
     elementExists(id: string, existing: Array<task | panel>) {
         return !!existing.find((item) => item.id === id);
     }
@@ -35,5 +23,5 @@ class KanbanService {
     }
 }
 
-const kanbanService = new KanbanService();
-export default kanbanService;
+const keyService = new KeyService();
+export default keyService;
