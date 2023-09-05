@@ -10,6 +10,7 @@ class DragAndDropService {
     timeOutId = 0;
     threshold = 250;
     canMove = false;
+    isBlocked = false;
 
     init() {
         this.hasTouchScreen = browserService.hasTouchscreen();
@@ -45,6 +46,8 @@ class DragAndDropService {
     }
 
     handleStart(task: task) {
+        if (this.isBlocked) return;
+
         this.timeOutId = setTimeout(() => {
             this.canMove = true;
         }, this.threshold);
@@ -57,8 +60,14 @@ class DragAndDropService {
     handleMove(
         event: TouchEvent<HTMLDivElement> | PointerEvent<HTMLDivElement>
     ) {
-        event.preventDefault();
-        if (!this.isPointerDown || !this.taskData || !this.canMove) {
+        if (!this.hasTouchScreen) event.preventDefault();
+
+        if (
+            !this.isPointerDown ||
+            !this.taskData ||
+            !this.canMove ||
+            this.isBlocked
+        ) {
             this.reset();
             return;
         }
@@ -86,7 +95,7 @@ class DragAndDropService {
     }
 
     handleEnd(callback: Function, task?: task) {
-        if (!callback || !this.taskData) return;
+        if (!callback || !this.taskData || this.isBlocked) return;
 
         if (task?.id === this.taskData?.id && !this.isMoving) {
             this.reset();
