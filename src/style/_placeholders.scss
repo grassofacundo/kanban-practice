@@ -33,7 +33,7 @@
 
 %custom-scroll-bar {
     @media (hover: hover) {
-        scrollbar-gutter: stable both-edges;
+        //scrollbar-gutter: stable both-edges;
 
         ::-webkit-scrollbar {
             width: 2px;

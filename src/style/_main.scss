@@ -19,36 +19,52 @@ body,
     padding: 0;
     width: 100%;
     height: 100%;
+    max-width: 100vw;
+    max-height: 100vh;
+    overflow: hidden;
 }
 
 body {
     @extend %custom-scroll-bar;
+    overflow: hidden;
 }
 
 #root {
     //Set dark variables
     --bgColor-dark: #{colors.$bgColor-dark};
     --primaryColor-dark: #{colors.$primaryColor-dark};
+    --secondaryColor-dark: #{colors.$secondaryColor-dark};
     --textColor-dark: #{colors.$textColor-dark};
     --accentColor-dark: #{colors.$accentColor-dark};
+    --errorColor-dark: #{colors.$errorColor-dark};
+    --successColor-dark: #{colors.$successColor-dark};
 
     //Set light variables
     --bgColor-light: #{colors.$bgColor-light};
     --primaryColor-light: #{colors.$primaryColor-light};
+    --secondaryColor-light: #{colors.$secondaryColor-light};
     --textColor-light: #{colors.$textColor-light};
     --accentColor-light: #{colors.$accentColor-light};
+    --errorColor-light: #{colors.$errorColor-light};
+    --successColor-light: #{colors.$successColor-light};
     @media (prefers-color-scheme: dark) {
         --bgColor: var(--bgColor-dark);
         --primaryColor: var(--primaryColor-dark);
+        --secondaryColor: var(--secondaryColor-dark);
         --textColor: var(--textColor-dark);
         --accentColor: var(--accentColor-dark);
+        --errorColor: var(--errorColor-dark);
+        --successColor: var(--successColor-dark);
     }
 
     @media (prefers-color-scheme: light) {
         --bgColor: var(--bgColor-light);
         --primaryColor: var(--primaryColor-light);
+        --secondaryColor: var(--secondaryColor-light);
         --textColor: var(--textColor-light);
         --accentColor: var(--accentColor-light);
+        --errorColor: var(--errorColor-light);
+        --successColor: var(--successColor-light);
     }
 
     --footerHeight: 50px;
@@ -63,6 +79,7 @@ h1,
 h2,
 h3,
 label,
+span,
 textarea {
     color: var(--textColor);
 }
@@ -76,7 +93,8 @@ p {
     }
 }
 
-button {
+button,
+input[type="submit"] {
     @extend %normal-button;
 }
 
