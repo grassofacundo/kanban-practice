@@ -1,21 +1,21 @@
 type statusName = string;
 
-export interface task {
+type task = {
     id: string;
     title: string;
     description: string;
     statusPanel: statusName;
-}
+};
 
-export interface panel {
+type panel = {
     id: string;
     name: statusName;
     tasks?: task[];
-}
+};
 
-export interface taskData {
+type taskData = {
     id?: string;
     title?: string;
     description?: string;
     statusPanel: statusName;
-}
+};

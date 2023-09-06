@@ -1,5 +1,4 @@
 import { TouchEvent, PointerEvent } from "react";
-import { task } from "../types/kanbanElements";
 import browserService from "./browserService";
 
 class DragAndDropService {

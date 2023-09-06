@@ -6,7 +6,6 @@ import {
     SetStateAction,
 } from "react";
 import styles from "./Task.module.scss";
-import { task } from "../../types/kanbanElements";
 import dragAndDropService from "../../services/dragAndDropService";
 import KanbanContext from "../contexts/KanbanContext";
 
@@ -46,8 +45,6 @@ const Task: FunctionComponent<thisProps> = ({
         const toUpdateTask = JSON.parse(JSON.stringify(task));
 
         if (dragAndDropService.isMoving) {
-            dragAndDropService.isBlocked = true;
-            onSetMessage({ content: `Moving ${task.title}`, isError: false });
             const currentPanel = toUpdateTask.statusPanel;
             if (!taskHtml) return;
             const panelsElem = kanbanCtx?.panels.map((panel) =>
@@ -59,6 +56,11 @@ const Task: FunctionComponent<thisProps> = ({
                 panelsElem as HTMLElement[]
             );
             if (overlappedPanel && currentPanel !== overlappedPanel.id) {
+                dragAndDropService.isBlocked = true;
+                onSetMessage({
+                    content: `Moving ${task.title}`,
+                    isError: false,
+                });
                 toUpdateTask.statusPanel = overlappedPanel.id;
                 const ok = await kanbanCtx?.updateTask(toUpdateTask);
                 if (!ok)

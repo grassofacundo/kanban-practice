@@ -1,5 +1,3 @@
-import { panel, task } from "../types/kanbanElements";
-
 class KeyService {
     elementExists(id: string, existing: Array<task | panel>) {
         return !!existing.find((item) => item.id === id);

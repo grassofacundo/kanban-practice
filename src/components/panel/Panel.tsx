@@ -1,5 +1,4 @@
 import { FunctionComponent, useContext, useEffect, useState } from "react";
-import { panel } from "../../types/kanbanElements";
 import Task from "../task/Task";
 import KanbanContext from "../contexts/KanbanContext";
 import styles from "./Panel.module.scss";
