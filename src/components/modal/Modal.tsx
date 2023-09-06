@@ -8,10 +8,9 @@ import {
     useCallback,
 } from "react";
 import TaskContext from "../contexts/KanbanContext";
-import { task, taskData } from "../../types/kanbanElements";
-import styles from "./Modal.module.scss";
 import keyService from "../../services/keyService";
 import Spinner from "../utils/spinner/Spinner";
+import styles from "./Modal.module.scss";
 
 type thisProps = {
     taskData: taskData;
@@ -28,10 +27,12 @@ const Modal: FunctionComponent<thisProps> = ({
         loadTask(taskData)
     );
     const [submitEnabled, setSubmitEnabled] = useState(false);
-    const [message, setMessage] = useState<string>("");
-    const [showMessage, setShowMessage] = useState<boolean>(false);
-    const [hasErrors, setHasErrors] = useState<boolean>(false);
+    const [message, setMessage] = useState<message>({
+        content: "",
+        isError: false,
+    });
     const [loading, setLoading] = useState<boolean>(false);
+    const [closingModal, setClosingModal] = useState(false);
 
     function tasksExists(): Boolean {
         return !!(
@@ -59,8 +60,7 @@ const Modal: FunctionComponent<thisProps> = ({
     }: ChangeEvent<
         HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >) {
-        setShowMessage(false);
-        setHasErrors(false);
+        hideMsg();
         const key = target.name;
         const value = target.value;
         setTaskToUpdate({ ...taskToUpdate, [key]: value });
@@ -71,8 +71,7 @@ const Modal: FunctionComponent<thisProps> = ({
         if (!kanbanCtx) return;
 
         setLoading(true);
-        setHasErrors(false);
-        setShowMessage(false);
+        hideMsg();
         let ok = false;
         if (taskExist()) {
             ok = await kanbanCtx?.updateTask(taskToUpdate as task);
@@ -81,19 +80,51 @@ const Modal: FunctionComponent<thisProps> = ({
         }
 
         if (ok) {
-            setHasErrors(false);
-            setMessage(taskExist() ? "Task updated" : "Task created");
+            setMessage({
+                content: taskExist() ? "Task updated" : "Task created",
+                isError: false,
+            });
             setSubmitEnabled(false);
+            handleClose();
         } else {
-            setHasErrors(true);
-            setMessage(
-                taskExist()
+            setMessage({
+                content: taskExist()
                     ? "Task not updated. Try again"
-                    : "Task not created. Try again"
-            );
+                    : "Task not created. Try again",
+                isError: true,
+            });
+            setLoading(false);
         }
-        setShowMessage(true);
-        setLoading(false);
+    }
+
+    async function deleteTask() {
+        if (!taskData.id) return;
+
+        setLoading(true);
+        hideMsg();
+        const ok = await kanbanCtx!.deleteTask(taskData.id);
+
+        if (ok) {
+            setMessage({ content: "Task deleted", isError: false });
+            setSubmitEnabled(false);
+            handleClose();
+        } else {
+            setMessage({
+                content: "Task not deleted. Try again",
+                isError: true,
+            });
+            setLoading(false);
+        }
+    }
+
+    function hideMsg() {
+        setMessage({ content: "", isError: false });
+    }
+
+    function handleClose() {
+        setTimeout(() => {
+            setClosingModal(true);
+        }, 1000);
     }
 
     useEffect(() => {
@@ -119,12 +150,20 @@ const Modal: FunctionComponent<thisProps> = ({
 
     return (
         <div className={styles.modalBody}>
-            <div className={styles.formContainer}>
+            <div
+                className={`${styles.formContainer} ${
+                    closingModal ? styles.closing : ""
+                }`}
+                onAnimationEnd={() => {
+                    closingModal ? handleModalClose() : {};
+                }}
+            >
                 <button
                     className={styles.closeButton}
-                    onClick={() => (!loading ? handleModalClose() : {})}
+                    disabled={loading || closingModal}
+                    onClick={() => setClosingModal(true)}
                 >
-                    X
+                    {loading ? <Spinner /> : "X"}
                 </button>
                 <form onSubmit={handleSubmit} className={styles.form}>
                     <fieldset>
@@ -176,20 +215,33 @@ const Modal: FunctionComponent<thisProps> = ({
                                     </div>
                                 ))}
                         </div>
-                        <div className={styles.submitWrapper}>
-                            <button disabled={!submitEnabled} type="submit">
-                                {loading ? <Spinner /> : "Submit"}
-                            </button>
-                            {showMessage && (
-                                <p
-                                    className={`${
-                                        hasErrors
-                                            ? styles.error
-                                            : styles.success
-                                    }`}
+                        <div className={styles.modalFooter}>
+                            <div className={styles.submitWrapper}>
+                                <button
+                                    disabled={!submitEnabled || closingModal}
+                                    type="submit"
                                 >
-                                    {message}
-                                </p>
+                                    {loading ? <Spinner /> : "Submit"}
+                                </button>
+                                {message.content && (
+                                    <p
+                                        className={`${
+                                            message.isError
+                                                ? styles.error
+                                                : styles.success
+                                        }`}
+                                    >
+                                        {message.content}
+                                    </p>
+                                )}
+                            </div>
+                            {taskExist() && (
+                                <button
+                                    disabled={loading || closingModal}
+                                    onClick={() => deleteTask()}
+                                >
+                                    {loading ? <Spinner /> : "Delete"}
+                                </button>
                             )}
                         </div>
                     </fieldset>

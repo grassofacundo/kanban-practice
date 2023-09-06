@@ -6,7 +6,6 @@ import {
     useRef,
     useState,
 } from "react";
-import { panel, task, taskData } from "../../types/kanbanElements";
 import dbService from "../../services/dbService";
 import keyService from "../../services/keyService";
 
@@ -16,12 +15,14 @@ type thisProps = {
 interface KanbanContextInterface {
     tasks: task[];
     panels: panel[];
+    hasContent: boolean;
     createPanel(status: string): Promise<boolean>;
     createTask(taskData: taskData): Promise<boolean>;
     updateTask(task: task): Promise<boolean>;
     getTaskById(taskId: string): task | null;
     getTasksByStatus(panelId: string): task[];
     getPanelById(panelId: string): panel | null;
+    deleteTask(taskId: string): Promise<boolean>;
 }
 
 const KanbanContext = createContext<KanbanContextInterface | null>(null);
@@ -31,6 +32,7 @@ export const KanbanProvider: FunctionComponent<thisProps> = ({ children }) => {
     const [panels, setPanels] = useState<panel[]>([]);
     const [prevState, setPrevState] = useState<task[] | panel[]>([]);
     const [restore, setRestore] = useState<"" | "task" | "panel">("");
+    const [hasContent, setHasContent] = useState(false);
     const loading = useRef(false);
 
     async function createTask(taskData: taskData): Promise<boolean> {
@@ -62,6 +64,17 @@ export const KanbanProvider: FunctionComponent<thisProps> = ({ children }) => {
             console.log("error");
             setRestore("task");
         }
+        return response.ok;
+    }
+
+    async function deleteTask(taskId: string): Promise<boolean> {
+        const task = getTaskById(taskId)!;
+        setPrevState(JSON.parse(JSON.stringify(tasks)));
+        const updatedTasks = tasks.filter((t) => t.id !== task.id);
+        setTasks(updatedTasks);
+        const response = await dbService.deleteTask(task);
+
+        if (!response.ok) setRestore("task");
         return response.ok;
     }
 
@@ -131,6 +144,7 @@ export const KanbanProvider: FunctionComponent<thisProps> = ({ children }) => {
                 }
                 setPanels(panels);
                 setTasks(tasks);
+                setHasContent(true);
             } catch (error) {
                 console.error(error);
             }
@@ -150,12 +164,14 @@ export const KanbanProvider: FunctionComponent<thisProps> = ({ children }) => {
             value={{
                 tasks,
                 panels,
+                hasContent,
                 createPanel,
                 createTask,
                 updateTask,
                 getTaskById,
                 getTasksByStatus,
                 getPanelById,
+                deleteTask,
             }}
         >
             {children}

@@ -1,13 +1,17 @@
-import { panel, task } from "../types/kanbanElements";
-
 class DbService {
     hasDatabase: boolean = false;
-    panelList: string[] = ["To do", "In progress", "Done"];
-    hasFixedPanels: boolean = true;
     taskLocalStorageKey = "tasks";
     panelLocalStorageKey = "panels";
-    loadingTime = 0;
-    canHaveError = false;
+
+    /*
+     *
+     * Config variables
+     */
+    loadingTime = 0; //Time on each request
+    canHaveError = false; //Request may fail if true
+    errorChance = 0; //1 out of n will fail
+    hasFixedPanels: boolean = true; //Use panel list instead of dynamically create them
+    panelList: string[] = ["To do", "In progress", "Done"]; //Name of fixed panels. Needs hasFixedPanels = true
 
     async getAllTasks(): Promise<dbResponse<task[]>> {
         const response: dbResponse<task[]> = {
@@ -195,9 +199,45 @@ class DbService {
         return response;
     }
 
+    async deleteTask(task: task): Promise<dbResponse<null>> {
+        const response: dbResponse<null> = {
+            ok: false,
+            error: "",
+            body: null,
+        };
+        if (this.hasDatabase) {
+            const apiResponse = await fetch("deleteTaskApi", {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(task),
+            });
+            response.ok = apiResponse.ok;
+            if (!response.ok) response.error = "Couldn't delete task.Try again";
+        } else {
+            const allTasks = await this.getAllTasks();
+            response.ok = allTasks.ok;
+            if (response.ok) {
+                const updatedArray = allTasks.body.filter(
+                    (t) => t.id !== task.id
+                );
+                localStorage.setItem(
+                    this.taskLocalStorageKey,
+                    JSON.stringify(updatedArray)
+                );
+            } else {
+                response.error = "Couldn't delete task.Try again";
+            }
+        }
+
+        return response;
+    }
+
     getError() {
-        const randomNumber = Math.floor(Math.random() * 4);
-        const hasError = randomNumber !== 0;
+        const randomNumber = Math.floor(Math.random() * this.errorChance);
+        const hasError = randomNumber === 0; //0 will fail
         const canHaveErrors = this.canHaveError;
         return canHaveErrors ? hasError : false;
     }
