@@ -10,11 +10,11 @@ import Panel from "../panel/Panel";
 import TaskContext from "../contexts/KanbanContext";
 import Modal from "../modal/Modal";
 import styles from "./Dashboard.module.scss";
-import { taskData } from "../../types/kanbanElements";
 import dragAndDropService from "../../services/dragAndDropService";
 import dbService from "../../services/dbService";
 import PanelSkeleton from "../panel/PanelSkeleton";
 import ThemeChanger from "../themeChanger/ThemeChanger";
+import Spinner from "../utils/spinner/Spinner";
 
 type thisProps = {};
 
@@ -28,8 +28,12 @@ const Dashboard: FunctionComponent<thisProps> = () => {
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
         isLoading(true);
-        await kanbanCtx?.createPanel(newPanelName);
-        setNewPanelName("");
+        const ok = await kanbanCtx?.createPanel(newPanelName);
+        if (ok) {
+            setNewPanelName("");
+        } else {
+            alert("Error creating panel. Try again.");
+        }
         isLoading(false);
     }
 
@@ -53,7 +57,7 @@ const Dashboard: FunctionComponent<thisProps> = () => {
         setModalOpen(false);
     }
 
-    const hasPanels = !!kanbanCtx && kanbanCtx?.panels?.length! > 0;
+    const hasPanels = !!kanbanCtx?.hasContent && kanbanCtx?.panels?.length! > 0;
 
     return (
         <div
@@ -75,19 +79,19 @@ const Dashboard: FunctionComponent<thisProps> = () => {
                         onHandleModalOpen={handleModalOpen}
                     />
                 ))}
-            {!hasPanels && [1, 2, 3].map((x) => <PanelSkeleton key={x} />)}
-            {!dbService.hasFixedPanels && (
+            {!kanbanCtx?.hasContent &&
+                [1, 2, 3].map((x) => <PanelSkeleton key={x} />)}
+            {!dbService.hasFixedPanels && kanbanCtx?.hasContent && (
                 <form onSubmit={handleSubmit} className={styles.form}>
                     <input
                         type="text"
                         placeholder="New panel name"
+                        value={newPanelName}
                         onChange={({ target }) => setNewPanelName(target.value)}
                     />
-                    <input
-                        disabled={loading || !newPanelName}
-                        type="submit"
-                        value="Submit"
-                    />
+                    <button disabled={loading || !newPanelName} type="submit">
+                        {loading ? <Spinner /> : "Submit"}
+                    </button>
                 </form>
             )}
             {modalOpen && modalData && (
