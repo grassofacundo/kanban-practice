@@ -19,10 +19,37 @@
     max-width: 400px;
     width: fit-content;
     background-color: var(--primaryColor);
+    animation: 250ms forwards slide-in;
+
+    &.closing {
+        animation: 250ms forwards slide-out;
+    }
 
     .closeButton {
         position: absolute;
         right: 0;
+    }
+
+    @keyframes slide-in {
+        0% {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slide-out {
+        0% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        100% {
+            opacity: 0;
+            transform: translateY(50px);
+        }
     }
 }
 
@@ -70,16 +97,21 @@
         }
     }
 
-    .submitWrapper {
+    .modalFooter {
         display: flex;
-        align-items: center;
+        justify-content: space-between;
 
-        .success {
-            color: var(--successColor);
-        }
+        .submitWrapper {
+            display: flex;
+            align-items: center;
 
-        .error {
-            color: var(--errorColor);
+            .success {
+                color: var(--successColor);
+            }
+
+            .error {
+                color: var(--errorColor);
+            }
         }
     }
 }
