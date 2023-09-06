@@ -61,7 +61,6 @@ export const KanbanProvider: FunctionComponent<thisProps> = ({ children }) => {
         const response = await dbService.updateTask(task);
 
         if (!response.ok) {
-            console.log("error");
             setRestore("task");
         }
         return response.ok;
@@ -110,7 +109,6 @@ export const KanbanProvider: FunctionComponent<thisProps> = ({ children }) => {
                 while (!panelsLoaded && attempts < 10) {
                     const response = await dbService.getAllPanels();
                     if (!response.ok) {
-                        console.log("Re trying panel");
                         attempts++;
                     } else {
                         panelsLoaded = true;
@@ -129,7 +127,6 @@ export const KanbanProvider: FunctionComponent<thisProps> = ({ children }) => {
                 while (!tasksLoaded && attempts < 10) {
                     const response = await dbService.getAllTasks();
                     if (!response.ok) {
-                        console.log("Re trying task");
                         attempts++;
                     } else {
                         tasksLoaded = true;
